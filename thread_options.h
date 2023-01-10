@@ -388,6 +388,9 @@ struct thread_options {
 
 	unsigned int log_entries;
 	unsigned int log_prio;
+
+    // for segment
+    unsigned int segment_size;
 };
 
 #define FIO_TOP_STR_MAX		256

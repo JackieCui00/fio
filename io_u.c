@@ -360,7 +360,31 @@ static int get_next_seq_offset(struct thread_data *td, struct fio_file *f,
 		loop_cache_invalidate(td, f);
 	}
 
-	if (f->last_pos[ddir] < f->real_file_size) {
+    if (td->o.segment_size != 0) {
+        uint64_t pos;
+        if (f->last_start[ddir] == -1ULL)
+        {
+            // no change, this is first write
+            pos = 0;
+        }
+        else
+        {
+            pos = f->last_start[ddir] - f->file_offset + td->o.segment_size;
+        }
+
+        if ((pos + f->file_offset) >= f->real_file_size)
+        {
+            ++(td->segment_round);
+            pos = td->segment_round * o->bs[ddir];
+        }
+
+        printf("Cuijiacheng, file_offset:%lu, file_size:%lu, new_offset:%lu, "
+                "last_pos:%lu\n", f->file_offset, f->real_file_size, pos,
+                f->last_start[ddir]);
+
+        *offset = pos;
+        return 0;
+    } else if (f->last_pos[ddir] < f->real_file_size) {
 		uint64_t pos;
 
 		/*
@@ -418,6 +442,7 @@ static int get_next_block(struct thread_data *td, struct io_u *io_u,
 	b = offset = -1ULL;
 
 	if (td_randtrimwrite(td) && ddir == DDIR_WRITE) {
+        assert(false);
 		/* don't mark randommap for these writes */
 		io_u_set(td, io_u, IO_U_F_BUSY_OK);
 		offset = f->last_start[DDIR_TRIM];
@@ -440,6 +465,7 @@ static int get_next_block(struct thread_data *td, struct io_u *io_u,
 			ret = get_next_seq_offset(td, f, ddir, &offset);
 		}
 	} else {
+        assert(false);
 		io_u_set(td, io_u, IO_U_F_BUSY_OK);
 		*is_random = false;
 

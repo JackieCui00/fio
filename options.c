@@ -2343,6 +2343,16 @@ struct fio_option fio_options[FIO_MAX_OPTS] = {
 		.category = FIO_OPT_C_IO,
 		.group	= FIO_OPT_G_INVALID,
 	},
+    {
+		.name	= "segment_size",
+		.lname	= "IO offset increment",
+		.type	= FIO_OPT_STR_VAL_ZONE,
+		.off1	= offsetof(struct thread_options, segment_size),
+		.help	= "divide the io region to several segments",
+		.def	= "0",
+		.category = FIO_OPT_C_IO,
+		.group	= FIO_OPT_G_INVALID,
+    },
 	{
 		.name	= "number_ios",
 		.lname	= "Number of IOs to perform",

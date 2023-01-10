@@ -493,6 +493,7 @@ struct thread_data {
 	CUdeviceptr dev_mem_ptr;
 #endif
 
+    uint32_t segment_round;
 };
 
 struct thread_segment {
